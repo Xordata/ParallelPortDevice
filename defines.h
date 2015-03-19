@@ -19,7 +19,7 @@
 
 #ifndef parallelportDEFINES_H
 #define parallelportDEFINES_H
-#include "./../../BrainStim/maindefines.h"
+#include "maindefines.h"
 
 //Only edit the below!
 #define PLUGIN_FILE_VERSION_STRING_MAJOR	1   //Please do not edit this line manually, see BinaryVersioning.qs (14825141414).

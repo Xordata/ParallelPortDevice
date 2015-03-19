@@ -26,7 +26,7 @@
 #include "inpout32.h"
 #include "ppCaptureThread.h"
 #include "ppGenerateThread.h"
-#include "./../../BrainStim/mainappinfo.h"
+#include "mainappinfo.h"
 
 //!  The ParallelPort Device class. 
 /*!

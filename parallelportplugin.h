@@ -24,7 +24,7 @@
 #include <QtWidgets>
 #include <QString>
 #include <Qlibrary>
-#include "../../BrainStim/plugininterface.h"
+#include "plugininterface.h"
 #include "pport_dialog.h"
 #include "ParallelPort.h"
 #include "defines.h"
