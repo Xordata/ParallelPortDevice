@@ -140,6 +140,9 @@ if $(Platform)==Win32 xcopy "$(INPOUT_1500)\inpout32.dll" "$(ProjectDir)\build\$
 if $(Platform)==x64 xcopy "$(INPOUT_1500)\inpoutx64.dll" "$(ProjectDir)\build\$(Platform)\$(Configuration)\" /i /d /y
 if errorlevel 1 goto BuildEventFailed
 
+xcopy "$(ProjectDir)scripts" "$(ProjectDir)\build\$(Platform)\$(Configuration)\" /i /d /y
+if errorlevel 1 goto BuildEventFailed
+
 SET PATH=%PATH%;$(QTDIR)\bin
 CD $(BRAINSTIM_HOME)\Install\
 $(BRAINSTIM_HOME)\Install\UpdateMngr_$(Platform)_$(Configuration) -p "$(ProjectDir)build\$(Platform)\$(Configuration)\$(ProjectName)_$(Platform)_$(Configuration).ini" install -o
@@ -211,6 +214,9 @@ if errorlevel 1 goto BuildEventFailed
 echo $(Platform)
 if $(Platform)==Win32 xcopy "$(INPOUT_1500)\inpout32.dll" "$(ProjectDir)\build\$(Platform)\$(Configuration)\" /i /d /y
 if $(Platform)==x64 xcopy "$(INPOUT_1500)\inpoutx64.dll" "$(ProjectDir)\build\$(Platform)\$(Configuration)\" /i /d /y
+if errorlevel 1 goto BuildEventFailed
+
+xcopy "$(ProjectDir)scripts" "$(ProjectDir)\build\$(Platform)\$(Configuration)\" /i /d /y
 if errorlevel 1 goto BuildEventFailed
 
 SET PATH=%PATH%;$(QTDIR)\bin
@@ -285,6 +291,9 @@ if $(Platform)==Win32 xcopy "$(INPOUT_1500)\inpout32.dll" "$(ProjectDir)\build\$
 if $(Platform)==x64 xcopy "$(INPOUT_1500)\inpoutx64.dll" "$(ProjectDir)\build\$(Platform)\$(Configuration)\" /i /d /y
 if errorlevel 1 goto BuildEventFailed
 
+xcopy "$(ProjectDir)scripts" "$(ProjectDir)\build\$(Platform)\$(Configuration)\" /i /d /y
+if errorlevel 1 goto BuildEventFailed
+
 SET PATH=%PATH%;$(QTDIR)\bin
 CD $(BRAINSTIM_HOME)\Install\
 $(BRAINSTIM_HOME)\Install\UpdateMngr_$(Platform)_$(Configuration) -p "$(ProjectDir)build\$(Platform)\$(Configuration)\$(ProjectName)_$(Platform)_$(Configuration).ini" install -o
@@ -354,6 +363,9 @@ if errorlevel 1 goto BuildEventFailed
 echo $(Platform)
 if $(Platform)==Win32 xcopy "$(INPOUT_1500)\inpout32.dll" "$(ProjectDir)\build\$(Platform)\$(Configuration)\" /i /d /y
 if $(Platform)==x64 xcopy "$(INPOUT_1500)\inpoutx64.dll" "$(ProjectDir)\build\$(Platform)\$(Configuration)\" /i /d /y
+if errorlevel 1 goto BuildEventFailed
+
+xcopy "$(ProjectDir)scripts" "$(ProjectDir)\build\$(Platform)\$(Configuration)\" /i /d /y
 if errorlevel 1 goto BuildEventFailed
 
 SET PATH=%PATH%;$(QTDIR)\bin
