@@ -7,8 +7,8 @@ BrainStim.addScriptIncludePath(sBrainStimDocPath + "/scripts");
 Include(sBrainStimDocPath + "/scripts/DocumentVersioningLib.qs");
 	
 /////////////////////////CONFIGURATION(BEGIN)////////////////////////////////////////////
-_sPluginName = "<Rename>";
-_sPluginDocRootFolderName = "<Rename>";
+_sPluginName = "ParallelPortDevice";
+_sPluginDocRootFolderName = "ParallelPortDevice";
 _sPluginVersion = "1.0.0.1";
 _sDocVersion = "1.0.0.1";
 var _sMinimalBrainStimVersion = "1.1.0.0";
