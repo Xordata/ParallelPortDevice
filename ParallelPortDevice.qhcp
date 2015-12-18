@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	<QHelpCollectionProject version="1.0">
 <!--doc-version-qhelp-begin-->
-<!-- Please do not edit the below line(s) manually, see DocumentVersioning.qs (15119145528),BrainStim version 1.0.0.1, Plugin version 1.0.0.1-->
+<!-- Please do not edit the below line(s) manually, see DocumentVersioning.qs (151116144153),BrainStim version 1.1.0.1, Plugin version 1.1.0.1-->
   <assistant>
-		<title>ParallelPortDevice plugin v1.0.0.1</title>
+		<title>ParallelPortDevice plugin v1.1.0.1</title>
     <applicationIcon>ParallelPortDevice/images/logo.jpg</applicationIcon>
     <cacheDirectory>svengijsen/BrainStim/Plugins/ParallelPortDevice</cacheDirectory>
     <startPage>qthelp://com.svengijsen.brainstim/doc/plugins/ParallelPortDevice/index.html</startPage>
