@@ -1,38 +1,149 @@
-var strGlobal = new String(""); //Just a string for global use
-var nTriggerCounter = 0;
+var PPDevice = new ParallelPortDevice(); //Construct a Parallel Port Object
 
-function myFinalCleanup()//Cleanup
+//Create a custom dialog with only one exit button to exit the script when needed
+function Dialog(parent)
 {
-	PPDevice.StopGenerateThread();
-	PPDevice.StopCaptureThread();	
-	//PPDevice.GenerateThreadStarted.disconnect(this, this.mySignalFunction);
-	//PPDevice.GenerateThreadTriggered.disconnect(this, this.mySignalFunction);
-	PPDevice.CaptureThreadStarted.disconnect(this, this.mySignalFunction);
-	PPDevice.CaptureThreadTriggered.disconnect(this, this.mySignalFunction);
-	PPDevice.CaptureThreadStopped.disconnect(this, this.mySignalFunction);
-	PPDevice = null;
-	mySignalFunction = null;
-	PauseMills = null;
-	myFinalCleanup = null;
-	Log("Finished script Cleanup!");
+	QDialog.call(this, parent);
+	var frameStyle = QFrame.Sunken | QFrame.Panel;
+	var layout = new QGridLayout;
+	layout.setColumnStretch(1, 1);	
+	layout.setColumnMinimumWidth(1, 300);
+	/////////////////////////////////////////////////////
+	this.exitButton = new QPushButton("Exit");	
+	layout.addWidget(this.exitButton, 99, 0);
+	/////////////////////////////////////////////////////
+	this.setLayout(layout);
+	this.windowTitle = "Menu Dialog";
 }
 
-function mySignalFunction()
+Dialog.prototype = new QDialog();
+
+Dialog.prototype.keyPressEvent = function(e /*QKeyEvent e*/)
 {
-	Log("mySignalFunction arguments count: " + arguments.length);
+	if(e.key() == Qt.Key_Escape)
+		this.close();
+	else
+		QDialog.keyPressEvent(e);
+}
+
+Dialog.prototype.closeEvent = function() 
+{
+	Log("Dialog closeEvent() detected!");
+	CleanupScript();
+}
+
+function CleanupScript()
+{
+	//Close dialog
+	mainDialog.close();
+	//Stop running ParallelPort threads
+	PPDevice.StopGenerateThread();
+	PPDevice.StopCaptureThread();	
+	//Disconnect the signal/slots
+	ConnectDisconnectScriptFunctions(false);
+	//Set all objects to null
+	PPDevice = null;
+	//Set all functions to null
+	ConnectDisconnectScriptFunctions = null;	
+	PPGenerateThreadStarted = null;	
+	PPGenerateThreadTriggered = null;	
+	PPGenerateThreadStopped = null;	
+	PPCaptureThreadStarted = null;	
+	PPCaptureThreadTriggered = null;	
+	PPCaptureThreadStopped = null;	
+	PauseMills = null;
+	CleanupScript = null;
+	//Dialog
+	Dialog.prototype.keyPressEvent = null;
+	Dialog.prototype.closeEvent = null;	
+	Dialog.prototype = null;
+	Dialog = null;	
+	//Post
+	Log("Finished script cleanup, ready for garbage collection!");
+	BrainStim.cleanupScript();
+}
+
+function PPGenerateThreadStarted()
+{
+	Log("PPGenerateThreadStarted() called");
 	for (var i = 0; i < arguments.length; ++i)
-	Log("mySignalFunction first argument: " + arguments[i]); 	
-	
-	nTriggerCounter++;
-	Log("nTriggerCounter = " + nTriggerCounter);
-	if (nTriggerCounter==4)
+		Log("\t arg[" + i + "]: " + arguments[i]); 
+}
+
+function PPGenerateThreadTriggered()
+{
+	Log("PPGenerateThreadTriggered() called");
+		for (var i = 0; i < arguments.length; ++i)
+		Log("\t arg[" + i + "]: " + arguments[i]); 
+}
+
+function PPGenerateThreadStopped()
+{
+	Log("PPGenerateThreadStopped() called");
+		for (var i = 0; i < arguments.length; ++i)
+		Log("\t arg[" + i + "]: " + arguments[i]); 
+}
+
+function PPCaptureThreadStarted()
+{
+	Log("PPCaptureThreadStarted() called");
+		for (var i = 0; i < arguments.length; ++i)
+		Log("\t arg[" + i + "]: " + arguments[i]); 
+}
+
+function PPCaptureThreadTriggered()
+{
+	Log("PPCaptureThreadTriggered() called");
+		for (var i = 0; i < arguments.length; ++i)
+		Log("\t arg[" + i + "]: " + arguments[i]); 
+}
+
+function PPCaptureThreadStopped()
+{
+	Log("PPCaptureThreadStopped() called");
+		for (var i = 0; i < arguments.length; ++i)
+		Log("\t arg[" + i + "]: " + arguments[i]); 
+}
+
+function ConnectDisconnectScriptFunctions(Connect)
+//This function can connect or disconnect all signal/slot connections defined by the boolean parameter 
+{
+	if(Connect) //This parameter defines whether we should connect or disconnect the signal/slots.
 	{
-		PPDevice.StopCaptureThread();
-	}	
-	if (nTriggerCounter==5)
-	{
-		myFinalCleanup();
+		Log("... Connecting Signal/Slots");
+		try 
+		{	
+			mainDialog.exitButton["clicked()"].connect(this, this.CleanupScript);
+			PPDevice.GenerateThreadStarted.connect(this, this.PPGenerateThreadStarted);
+			PPDevice.GenerateThreadTriggered.connect(this, this.PPGenerateThreadTriggered);
+			PPDevice.GenerateThreadStopped.connect(this, this.PPGenerateThreadStopped);
+			PPDevice.CaptureThreadStarted.connect(this, this.PPCaptureThreadStarted);
+			PPDevice.CaptureThreadTriggered.connect(this, this.PPCaptureThreadTriggered);
+			PPDevice.CaptureThreadStopped.connect(this, this.PPCaptureThreadStopped);
+		} 
+		catch (e) 
+		{
+			Log(".*. Something went wrong connecting the Signal/Slots:" + e); //If a connection fails warn the user!
+		}		
 	}
+	else
+	{
+		Log("... Disconnecting Signal/Slots");
+		try 
+		{	
+			mainDialog.exitButton["clicked()"].disconnect(this, this.CleanupScript);
+			PPDevice.GenerateThreadStarted.disconnect(this, this.PPGenerateThreadStarted);
+			PPDevice.GenerateThreadTriggered.disconnect(this, this.PPGenerateThreadTriggered);
+			PPDevice.GenerateThreadStopped.disconnect(this, this.PPGenerateThreadStopped);
+			PPDevice.CaptureThreadStarted.disconnect(this, this.PPCaptureThreadStarted);
+			PPDevice.CaptureThreadTriggered.disconnect(this, this.PPCaptureThreadTriggered);
+			PPDevice.CaptureThreadStopped.disconnect(this, this.PPCaptureThreadStopped);
+		} 
+		catch (e) 
+		{
+			Log(".*. Something went wrong disconnecting the Signal/Slots:" + e); //If a disconnection fails warn the user!
+		}		
+	}	
 }
 
 function PauseMills(millis)
@@ -44,81 +155,32 @@ function PauseMills(millis)
 	while(curDate-date < millis)
 }
 
-PPDevice = new ParallelPortDevice(); //Construct a Parallel Port Object
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Create and show the dialog
+var mainDialog = new Dialog();
+mainDialog.show();
+ConnectDisconnectScriptFunctions(true);
+
 //Configure the Parallel Port
-//Log(PPDevice.GetMinimalMainProgramVersion());//Test(""));
 Log("The default BaseAdress is: " + PPDevice.BaseAddress); //Read the default Parallel Port BaseAddress
 PPDevice.BaseAddress = 4368; //4368 (decimal) == 1110 (hexadecimal) 
 Log("The changed BaseAdress is: " + PPDevice.BaseAddress); //Read the changed Parallel Port BaseAddress again
-
 Log("The current Port Description" + PPDevice.GetPortDescription());
-
 //Read/Write some Port Values at the new BaseAddress
 for (i=0;i<5;i++) //Create a simple for-loop
 {
 	PPDevice.PortWrite(64); //64 => only bit6 (0..7) is active
 	Log(PPDevice.PortRead());
-	Pause(100); //Wait some time, this blocks the script
+	Pause(25); //Wait some time, this blocks the script
 	PPDevice.PortWrite(33); //33(=1+32) => bit0 and bit5 (0..7) are active 
 	Log(PPDevice.PortRead());
-	Pause(100);
+	Pause(25);
 }
 
-//Create and Stop a capture and generate thread
-//PPDevice.GenerateThreadStarted.connect(this, this.mySignalFunction);
-//PPDevice.GenerateThreadTriggered.connect(this, this.mySignalFunction);
-//PPDevice.PortWrite(0); 
-//PPDevice.ConfigurePortForInput();
-PPDevice.CaptureThreadStarted.connect(this, this.mySignalFunction);
-PPDevice.CaptureThreadTriggered.connect(this, this.mySignalFunction);
-PPDevice.CaptureThreadStopped.connect(this, this.mySignalFunction);
-PPDevice.StartGenerateThread(4370, 2, 1, 1, 0, 500, 1000);//(const short baseAddress,const short method, const short outputMask, const short activeValue, const short inActiveValue, const int activePulseTime, const int repetitionTime);
+//Start a capture thread
+PPDevice.ConfigurePortForInput();
 PPDevice.StartCaptureThread(4370, 1, 2, 0, 100);//(const short baseAddress, const short mask, const short method, const int postLHDelay = 0, const int postHLDelay = 0);
-//Pause(4000);
-//PauseMills(4000);//This function doesn't block the Timer thread, but has a high CPU load, it's better to use Timers/Signal/Slots
-//void setBaseAddress( short BaseAddress );
-//short getBaseAddress() const;
-//short PortRead();
-//void PortWrite(const short &Value);
-//bool IsPortEpp();
-//bool IsPortEcp();
-//ECP_Mode GetEcpMode();
-//PortType GetPortType();
-//bool IsPortSpp();
-//bool IsPortPS2();
-//bool IsPortInput();
-//bool IsPortOutput();
-//bool ConfigurePortForInput();
-//void ConfigurePortForOutput();
-//QString GetPortDescription();
-//bool BitRead(const short nBitNumber);
-//void BitWrite(const short nBitNumber, bool Value);
-//short BitReset(const short nBitNumber);
-//short BitSet(const short nBitNumber);
-//short BitToggle(const short nBitNumber);
-//short StatusPortRead();
-//short DataPortRead();
-//void DataPortWrite(const short Value);
-//short ControlPortRead();
-//void ControlPortWrite(const short Value);
-//int GetEppTimeoutBit();
-//bool StartGenerateThread(const short baseAddress,const short method, const short outputMask, const short activeValue, const short inActiveValue, const int activePulseTime, const int repetitionTime);
-	//method:
-		//0 = Value
-		//1 = Pulse
-		//2 = Periodical
-	//Signals:
-		//GenerateThreadTriggered(short);  --> gives value
-		//GenerateThreadStarted(QString); --> gives timestamp
-		//GenerateThreadStopped(QString);  --> gives timestamp		
-//void StopGenerateThread();
-//bool StartCaptureThread(const short baseAddress, const short mask, const short method, const int postLHDelay = 0, const int postHLDelay = 0);
-	//method:
-		//0 = MaskedValueChanged
-		//1 = MaskedValueChangedHigh
-		//2 = MaskedValueChangedLow
-	//Signals:
-		//CaptureThreadTriggered(short);  --> gives value
-		//CaptureThreadStarted(QString);  --> gives timestamp
-		//CaptureThreadStopped(QString);	  --> gives timestamp
-//void StopCaptureThread();
+
+//Start a generate thread
+//PPDevice.StartGenerateThread(4370, 2, 1, 1, 0, 500, 1000);//(const short baseAddress,const short method, const short outputMask, const short activeValue, const short inActiveValue, const int activePulseTime, const int repetitionTime);

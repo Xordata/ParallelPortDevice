@@ -51,6 +51,7 @@ private:
 	PPort_Dialog *PPortDiagObject;
 
 public slots:
+	bool HasGUI() { return true; };
     bool ShowGUI();
 	bool IsCompatible() {return PluginInterface::IsCompatible();};
 	QObject *GetScriptMetaObject(int nIndex) {if(nIndex == 0) return (QObject *)PPortObject->metaObject(); else return NULL;};

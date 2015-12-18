@@ -30,7 +30,7 @@
 
 //!  The ParallelPort Device class. 
 /*!
-  The ParallelPort Device can be used to communicate with a Parallel Port.
+  The ParallelPort Device can communicate with a standard Parallel Port.
 */
 class ParallelPort : public QObject, protected QScriptable
 {
